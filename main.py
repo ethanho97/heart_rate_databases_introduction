@@ -7,8 +7,8 @@ connect("mongodb://vcm-3591.vm.duke.edu:27017/heart_rate_app")
 
 def add_heart_rate(email, heart_rate, time):
     """
-    Appends a heart_rate measurement at a specified time to the user specified by
-    email. It is assumed that the user specified by email exists already.
+    Appends a heart_rate measurement at a specified time to the user specified
+    by email. It is assumed that the user specified by email exists already.
     :param email: str email of the user
     :param heart_rate: number heart_rate measurement of the user
     :param time: the datetime of the heart_rate measurement
@@ -24,8 +24,9 @@ def add_heart_rate(email, heart_rate, time):
 
 def create_user(email, age, heart_rate, time):
     """
-    Creates a user with the specified email and age. If the user already exists in the DB this WILL
-    overwrite that user. It also adds the specified heart_rate to the user
+    Creates a user with the specified email and age. If the user already exists
+    in the DB this WILL overwrite that user. It also adds the specified
+    heart_rate to the user
     :param email: str email of the new user
     :param age: number age of the new user
     :param heart_rate: number initial heart_rate of this new user

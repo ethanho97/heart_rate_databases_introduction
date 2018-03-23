@@ -1,7 +1,7 @@
-from flask import Flask, jsonify, request
-app = Flask(__name__)
 import datetime
 from main import *
+from flask import Flask, jsonify, request
+app = Flask(__name__)
 
 
 @app.route("/api/heart_rate", methods=["POST"])
@@ -12,7 +12,7 @@ def user_data():
     hr = r["heart_rate"]
     try:
         user = add_heart_rate(email, hr, time=datetime.datetime.now())
-    except BaseException:
+    except:
         user = create_user(email, age, hr, time=datetime.datetime.now())
         return "User data created."
     return "User data updated."
@@ -25,7 +25,7 @@ def user_heart_rate(user_email):
             "heart_rate": hr_data(user_email)
         }
         return jsonify(hr)
-    except BaseException:
+    except:
         return "User does not exist."
 
 
@@ -36,7 +36,7 @@ def user_avg_heart_rate(user_email):
             "average_heart_rate": hr_avg(user_email)
         }
         return jsonify(average)
-    except BaseException:
+    except:
         return "User does not exist."
 
 
@@ -52,5 +52,5 @@ def user_int_avg():
             "tachycardia status": d[1]
         }
         return jsonify(int_avg)
-    except BaseException:
+    except:
         return "User does not exist."
