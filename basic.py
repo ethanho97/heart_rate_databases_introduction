@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request
 app = Flask(__name__)
 import datetime
-import numpy as np
 from main import *
 
 
@@ -13,30 +12,45 @@ def user_data():
     hr = r["heart_rate"]
     try:
         user = add_heart_rate(email, hr, time=datetime.datetime.now())
-    except:
+    except BaseException:
         user = create_user(email, age, hr, time=datetime.datetime.now())
-        return "User data created"
-    return "User data updated"
+        return "User data created."
+    return "User data updated."
+
 
 @app.route("/api/heart_rate/<user_email>", methods=["GET"])
 def user_heart_rate(user_email):
-    data = get_data(user_email)
-    return jsonify(data)
+    try:
+        hr = {
+            "heart_rate": hr_data(user_email)
+        }
+        return jsonify(hr)
+    except BaseException:
+        return "User does not exist."
+
 
 @app.route("/api/heart_rate/average/<user_email>", methods=["GET"])
 def user_avg_heart_rate(user_email):
-    hr = hr_data(user_email)
-    average = {
-        "average_heart_rate": np.mean(hr)
-    }
-    return jsonify(average)
+    try:
+        average = {
+            "average_heart_rate": hr_avg(user_email)
+        }
+        return jsonify(average)
+    except BaseException:
+        return "User does not exist."
+
 
 @app.route("/api/heart_rate/interval_average", methods=["POST"])
 def user_int_avg():
-    r = request.get_json()
-    email = r["user_email"]
-    ref_time = r["heart_rate_average_since"]
-    int_avg = {
-        "interval average since time": interval_data(email, ref_time)
-    }
-    return jsonify(int_avg)
+    try:
+        r = request.get_json()
+        email = r["user_email"]
+        ref_time = r["heart_rate_average_since"]
+        d = interval_data(email, ref_time)
+        int_avg = {
+            "interval average since time": d[0],
+            "tachycardia status": d[1]
+        }
+        return jsonify(int_avg)
+    except BaseException:
+        return "User does not exist."

@@ -13,9 +13,12 @@ def add_heart_rate(email, heart_rate, time):
     :param heart_rate: number heart_rate measurement of the user
     :param time: the datetime of the heart_rate measurement
     """
-    user = models.User.objects.raw({"_id": email}).first()  # Get the first user where _id=email
-    user.heart_rate.append(heart_rate)  # Append the heart_rate to the user's list of heart rates
-    user.heart_rate_times.append(time)  # append the current time to the user's list of heart rate times
+    user = models.User.objects.raw(
+        {"_id": email}).first()  # Get the first user where _id=email
+    # Append the heart_rate to the user's list of heart rates
+    user.heart_rate.append(heart_rate)
+    # append the current time to the user's list of heart rate times
+    user.heart_rate_times.append(time)
     user.save()  # save the user to the database
 
 
@@ -40,24 +43,43 @@ def print_user(email):
     :param email: str email of the user of interest
     :return:
     """
-    user = models.User.objects.raw({"_id": email}).first()  # Get the first user where _id=email
+    user = models.User.objects.raw(
+        {"_id": email}).first()  # Get the first user where _id=email
     print(user.email)
     print(user.heart_rate)
     print(user.heart_rate_times)
 
-def get_data(email):
-    user = models.User.objects.raw({"_id": email}).first()
-    data = {
-        "user_email": user.email,
-        "heart_rate": user.heart_rate
-    }
-    return data
 
 def hr_data(email):
+    """
+    Finds heart rate data for the user with the specified email
+    :param email: str email of the user of interest
+    :returns: user's heart rate measurements
+    """
     user = models.User.objects.raw({"_id": email}).first()
     return user.heart_rate
 
+
+def hr_avg(email):
+    """
+    Finds average of all heart rate measurements for user with specified email
+    :param email: str email of the user of interest
+    :returns: user's average heart rate
+    """
+    user = models.User.objects.raw({"_id": email}).first()
+    hr = user.heart_rate
+    average = np.mean(hr)
+    return average
+
+
 def interval_data(email, ref_time):
+    """
+    Finds average heart rate of specified user after a certain time
+    and determines if the user has tachycardia
+    :param email: str email of the user of interest
+    :param ref_time: datetime of when heart rates should be taken after
+    :returns: average heart rate after datetime and tachycardia status
+    """
     user = models.User.objects.raw({"_id": email}).first()
     time = user.heart_rate_times
     ref_time = datetime.datetime.strptime(ref_time, "%Y-%m-%d %H:%M:%S.%f")
@@ -66,9 +88,18 @@ def interval_data(email, ref_time):
         if time[i] > ref_time:
             hr.append(user.heart_rate[i])
     average = np.mean(hr)
-    return average
+    if average > 100 and user.age > 15:
+        return [average, "Present."]
+    else:
+        return [average, "Not present."]
+
 
 if __name__ == "__main__":
-    create_user(email="suyash@suyashkumar.com", age=24, heart_rate=60, time=datetime.datetime.now())  # we should only do this once, otherwise will overwrite existing user
+    # we should only do this once, otherwise will overwrite existing user
+    create_user(
+        email="suyash@suyashkumar.com",
+        age=24,
+        heart_rate=60,
+        time=datetime.datetime.now())
     add_heart_rate("suyash@suyashkumar.com", 60, datetime.datetime.now())
     print_user("suyash@suyashkumar.com")
