@@ -1,4 +1,6 @@
 __pycache__
 env
 db
-
+docs/_build/
+docs/static/
+docs/_templates/
