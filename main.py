@@ -9,6 +9,7 @@ def add_heart_rate(email, heart_rate, time):
     """
     Appends a heart_rate measurement at a specified time to the user specified
     by email. It is assumed that the user specified by email exists already.
+
     :param email: str email of the user
     :param heart_rate: number heart_rate measurement of the user
     :param time: the datetime of the heart_rate measurement
@@ -27,6 +28,7 @@ def create_user(email, age, heart_rate, time):
     Creates a user with the specified email and age. If the user already exists
     in the DB this WILL overwrite that user. It also adds the specified
     heart_rate to the user
+
     :param email: str email of the new user
     :param age: number age of the new user
     :param heart_rate: number initial heart_rate of this new user
@@ -41,8 +43,9 @@ def create_user(email, age, heart_rate, time):
 def print_user(email):
     """
     Prints the user with the specified email
+
     :param email: str email of the user of interest
-    :return:
+    :returns:
     """
     user = models.User.objects.raw(
         {"_id": email}).first()  # Get the first user where _id=email
@@ -54,6 +57,7 @@ def print_user(email):
 def hr_data(email):
     """
     Finds heart rate data for the user with the specified email
+
     :param email: str email of the user of interest
     :returns: user's heart rate measurements
     """
@@ -64,6 +68,7 @@ def hr_data(email):
 def hr_avg(email):
     """
     Finds average of all heart rate measurements for user with specified email
+
     :param email: str email of the user of interest
     :returns: user's average heart rate
     """
@@ -77,6 +82,7 @@ def interval_data(email, ref_time):
     """
     Finds average heart rate of specified user after a certain time
     and determines if the user has tachycardia
+
     :param email: str email of the user of interest
     :param ref_time: datetime of when heart rates should be taken after
     :returns: average heart rate after datetime and tachycardia status
