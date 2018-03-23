@@ -1,7 +1,8 @@
 from pymodm import connect
 import models
 import datetime
-connect("mongodb://vcm@vcm-3591.vm@duke.edu:27017/heart_rate_app")
+import numpy as np
+connect("mongodb://vcm-3591.vm.duke.edu:27017/heart_rate_app")
 
 
 def add_heart_rate(email, heart_rate, time):
@@ -44,7 +45,7 @@ def print_user(email):
     print(user.heart_rate)
     print(user.heart_rate_times)
 
-def user_data(email):
+def get_data(email):
     user = models.User.objects.raw({"_id": email}).first()
     data = {
         "user_email": user.email,
@@ -55,6 +56,17 @@ def user_data(email):
 def hr_data(email):
     user = models.User.objects.raw({"_id": email}).first()
     return user.heart_rate
+
+def interval_data(email, ref_time):
+    user = models.User.objects.raw({"_id": email}).first()
+    time = user.heart_rate_times
+    ref_time = datetime.datetime.strptime(ref_time, "%Y-%m-%d %H:%M:%S.%f")
+    hr = []
+    for i, value in enumerate(time):
+        if time[i] > ref_time:
+            hr.append(user.heart_rate[i])
+    average = np.mean(hr)
+    return average
 
 if __name__ == "__main__":
     create_user(email="suyash@suyashkumar.com", age=24, heart_rate=60, time=datetime.datetime.now())  # we should only do this once, otherwise will overwrite existing user
